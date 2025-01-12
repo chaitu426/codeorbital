@@ -95,7 +95,7 @@ function EditorPanel() {
   
       // Dummy memory map based on code analysis
       const memoryMap = `Memory Map for the current code:\n${lines
-        .map((line: string | any[], idx: number) => {
+        .map((line: string | string[], idx: number) => {
           return `Line ${idx + 1}: ${line.length} bytes`; // Line size in bytes
         })
         .join("\n")}\n\nTime Complexity: ${timeComplexity}\nSpace Complexity: ${spaceComplexity}`;

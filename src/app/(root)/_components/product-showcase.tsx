@@ -2,9 +2,7 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
 
-const appScreen = '/app-screen.png';
-const editor = '/editor.png';
-const webdev = 'webdev.png';
+
 const snippet = '/snippet.png';
 import { useMediaQuery } from '@/hooks/use-media-query'
 
@@ -33,7 +31,7 @@ export function ProductShowcase() {
         </h2>
         <div className="mx-auto max-w-xl">
           <p className="mt-5 text-center text-xl text-white/70">
-          Effortlessly share your code snippets with the community. Discover and sort snippets by language, or dive into curated categories like "Web Development" to find exactly what you need.
+          Effortlessly share your code snippets with the community. Discover and sort snippets by language, or dive into curated categories like &quot;Web Development&quot; to find exactly what you need.
 
 
           </p>

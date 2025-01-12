@@ -2,10 +2,9 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef } from 'react'
 
-const appScreen = '/app-screen.png';
-const editor = '/editor.png';
+
 const webdev = 'webdev.png';
-const snippet = '/snippet.png';
+
 import { useMediaQuery } from '@/hooks/use-media-query'
 
 export function ProductShowcase1() {
