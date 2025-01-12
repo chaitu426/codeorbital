@@ -37,13 +37,13 @@ function App() {
   const getFileContent = () => {
     switch (activeFile) {
       case "HTML":
-        return { language: "html" as "html", value: html, setValue: setHtml };
+        return { language: "html" as const, value: html, setValue: setHtml };
       case "CSS":
-        return { language: "css" as "css", value: css, setValue: setCss };
+        return { language: "css" as const, value: css, setValue: setCss };
       case "JS":
-        return { language: "javascript" as "javascript", value: js, setValue: setJs };
+        return { language: "javascript" as const, value: js, setValue: setJs };
       default:
-        return { language: "html" as "html", value: html, setValue: setHtml };
+        return { language: "html" as const, value: html, setValue: setHtml };
     }
   };
 
