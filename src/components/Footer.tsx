@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Facebook, Twitter, Instagram, Linkedin, Github } from 'lucide-react'
+import {  Instagram, Linkedin, Github } from 'lucide-react'
 
 const socialLinks = [
   
