@@ -1,12 +1,10 @@
-"use client";
-
 import { useState, useEffect } from "react";
 
 export default function MobilePopup() {
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+    const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
     const isMobileDevice =
       /Android|iPhone|iPad|iPod|Opera Mini|IEMobile|WPDesktop/i.test(userAgent);
     setIsMobile(isMobileDevice);
