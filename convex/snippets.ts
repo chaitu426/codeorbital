@@ -4,6 +4,9 @@ import { mutation, query } from "./_generated/server";
 export const createSnippet = mutation({
   args: {
     title: v.string(),
+    html:v.string(),
+    css: v.string(),
+    js: v.string(),
     language: v.string(),
     code: v.string(),
   },
@@ -23,6 +26,9 @@ export const createSnippet = mutation({
       userId: identity.subject,
       userName: user.name,
       title: args.title,
+      html: args.html,
+      css: args.css,
+      js: args.js,
       language: args.language,
       code: args.code,
     });

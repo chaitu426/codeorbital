@@ -60,6 +60,9 @@ export interface Snippet {
   _creationTime: number;
   userId: string;
   language: string;
+  html: string;
+  css: string;
+  js: string;
   code: string;
   title: string;
   userName: string;

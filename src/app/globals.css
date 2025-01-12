@@ -19,3 +19,22 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+@layer base {
+  html {
+    @apply font-dmSans;
+  }
+
+  .gradient-primary {
+    --tw-gradient-stops: var(--rainbow-gradient)
+  }
+
+  .gradient-secondary {
+    --tw-gradient-stops: var(--purple-gradient);
+  }
+
+  .bg-hero {
+    @apply bg-[linear-gradient(to_bottom,)];
+    --tw-gradient-stops: #000, #200D42_34%, #4F21A1_65%, #A46EDB_82%;
+  }
+} 

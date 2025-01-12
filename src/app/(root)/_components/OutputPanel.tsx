@@ -5,6 +5,7 @@ import { AlertTriangle, CheckCircle, Clock, Copy, Terminal } from "lucide-react"
 import { useState } from "react";
 import RunningCodeSkeleton from "./RunningCodeSkeleton";
 
+
 function OutputPanel() {
   const { output, error, isRunning } = useCodeEditorStore();
   const [isCopied, setIsCopied] = useState(false);

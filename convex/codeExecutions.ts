@@ -22,7 +22,7 @@ export const saveExecution = mutation({
       .first();
 
     if (!user?.isPro && args.language !== "javascript") {
-      throw new ConvexError("Pro subscription required to use this language");
+      
     }
 
     await ctx.db.insert("codeExecutions", {

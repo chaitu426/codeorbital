@@ -1,4 +1,6 @@
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
+import useLocalStorage from "@/hooks/useLocalStorag";
+
 import { useMutation } from "convex/react";
 import { useState } from "react";
 import { api } from "../../../../convex/_generated/api";
@@ -6,9 +8,13 @@ import { X } from "lucide-react";
 import toast from "react-hot-toast";
 
 function ShareSnippetDialog({ onClose }: { onClose: () => void }) {
+  const [html] = useLocalStorage("html", "");
+  const [css] = useLocalStorage("css", "");
+  const [js] = useLocalStorage("js", "");
   const [title, setTitle] = useState("");
   const [isSharing, setIsSharing] = useState(false);
-  const { language, getCode } = useCodeEditorStore();
+  const { language: initialLanguage, getCode } = useCodeEditorStore();
+
   const createSnippet = useMutation(api.snippets.createSnippet);
 
   const handleShare = async (e: React.FormEvent) => {
@@ -18,7 +24,10 @@ function ShareSnippetDialog({ onClose }: { onClose: () => void }) {
 
     try {
       const code = getCode();
-      await createSnippet({ title, language, code });
+      // Set language to "webdev" if code is null
+      const language = code ? initialLanguage : "webdev";
+
+      await createSnippet({ title, language, code, html, css, js });
       onClose();
       setTitle("");
       toast.success("Snippet shared successfully");

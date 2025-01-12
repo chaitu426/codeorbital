@@ -24,9 +24,14 @@ export default defineSchema({
     userId: v.string(),
     title: v.string(),
     language: v.string(),
+    html:v.string(),
+    css:v.string(),
+    js:v.string(),
     code: v.string(),
     userName: v.string(), // store user's name for easy access
   }).index("by_user_id", ["userId"]),
+
+ 
 
   snippetComments: defineTable({
     snippetId: v.id("snippets"),

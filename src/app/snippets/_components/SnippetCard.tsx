@@ -12,6 +12,7 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import StarButton from "@/components/StarButton";
 
+
 function SnippetCard({ snippet }: { snippet: Snippet }) {
   const { user } = useUser();
   const deleteSnippet = useMutation(api.snippets.deleteSnippet);
@@ -29,6 +30,10 @@ function SnippetCard({ snippet }: { snippet: Snippet }) {
       setIsDeleting(false);
     }
   };
+
+  // Determine language and image based on snippet code availability
+  const language = snippet.code ? snippet.language : "webdev";
+  const imagePath = snippet.code ? `/${snippet.language}.png` : `/web.png` ;
 
   return (
     <motion.div
@@ -58,8 +63,8 @@ function SnippetCard({ snippet }: { snippet: Snippet }) {
                    group-hover:to-purple-500/20 transition-all duration-500"
                   >
                     <Image
-                      src={`/${snippet.language}.png`}
-                      alt={`${snippet.language} logo`}
+                      src={imagePath}
+                      alt={`${language} logo`}
                       className="w-6 h-6 object-contain relative z-10"
                       width={24}
                       height={24}
@@ -68,7 +73,7 @@ function SnippetCard({ snippet }: { snippet: Snippet }) {
                 </div>
                 <div className="space-y-1">
                   <span className="px-3 py-1 bg-blue-500/10 text-blue-400 rounded-lg text-xs font-medium">
-                    {snippet.language}
+                    {language}
                   </span>
                   <div className="flex items-center gap-2 text-xs text-gray-500">
                     <Clock className="size-3" />
@@ -88,11 +93,10 @@ function SnippetCard({ snippet }: { snippet: Snippet }) {
                       onClick={handleDelete}
                       disabled={isDeleting}
                       className={`group flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all duration-200
-                                  ${
-                                    isDeleting
-                                      ? "bg-red-500/20 text-red-400 cursor-not-allowed"
-                                      : "bg-gray-500/10 text-gray-400 hover:bg-red-500/10 hover:text-red-400"
-                                  }
+                                  ${isDeleting
+                          ? "bg-red-500/20 text-red-400 cursor-not-allowed"
+                          : "bg-gray-500/10 text-gray-400 hover:bg-red-500/10 hover:text-red-400"
+                        }
                                 `}
                     >
                       {isDeleting ? (
@@ -125,9 +129,30 @@ function SnippetCard({ snippet }: { snippet: Snippet }) {
               <div className="relative group/code">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/15 to-purple-500/5 rounded-lg opacity-0 group-hover/code:opacity-100 transition-all" />
                 <pre className="relative bg-black/30 rounded-lg p-4 overflow-hidden text-sm text-gray-300 font-mono line-clamp-3">
-                  {snippet.code}
+                  {snippet.code ? (
+                    snippet.code
+                  ) : (
+                    <>
+                      <div>
+                        <strong>HTML:</strong>
+                        <br />
+                        {snippet.html}
+                      </div>
+                      <div>
+                        <strong>CSS:</strong>
+                        <br />
+                        {snippet.css}
+                      </div>
+                      <div>
+                        <strong>JS:</strong>
+                        <br />
+                        {snippet.js}
+                      </div>
+                    </>
+                  )}
                 </pre>
               </div>
+
             </div>
           </div>
         </div>

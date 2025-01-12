@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "convex/react";
+import { Snippet } from "@/types";
 import { api } from "../../../convex/_generated/api";
 import { useState } from "react";
 import SnippetsPageSkeleton from "./_components/SnippetsPageSkeleton";
@@ -10,7 +11,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { BookOpen, Code, Grid, Layers, Search, Tag, X } from "lucide-react";
 import SnippetCard from "./_components/SnippetCard";
 
-function SnippetsPage() {
+function SnippetsPage({ snippet }: { snippet: Snippet }) {
   const snippets = useQuery(api.snippets.getSnippets);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null);
@@ -41,7 +42,7 @@ function SnippetsPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f]">
+    <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#231814]">
       <NavigationHeader />
 
       <div className="relative max-w-7xl mx-auto px-4 py-12">
@@ -114,7 +115,7 @@ function SnippetsPage() {
                   `}
               >
                 <div className="flex items-center gap-2">
-                  <img src={`/${lang}.png`} alt={lang} className="w-4 h-4 object-contain" />
+                  <img src={lang != "webdev" ?`/${lang}.png`:`/web.png`} alt={lang} className="w-4 h-4 object-contain" />
                   <span className="text-sm">{lang}</span>
                 </div>
               </button>

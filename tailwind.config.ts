@@ -8,6 +8,10 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        dmSans: ['DM Sans', 'sans-serif'], // Define the font family
+      },
+      
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
