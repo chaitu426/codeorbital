@@ -8,9 +8,18 @@ import NavigationHeader from "@/components/NavigationHeader";
 import ShareSnippetDialog from "@/app/(root)/_components/ShareSnippetDialog"; // Import the dialog
 import { motion } from "framer-motion";
 
-// Dynamically import Editor and Preview to disable SSR
-const Editor = dynamic(() => import("./_components/Editor"), { ssr: false });
-const Preview = dynamic(() => import("./_components/preview"), { ssr: false });
+// Dynamically import Editor and Preview with explicit typing
+const Editor = dynamic(() => import("./_components/Editor"), { ssr: false }) as React.ComponentType<{
+  language: "html" | "css" | "javascript";
+  value: string;
+  onChange: (value: string) => void;
+}>;
+
+const Preview = dynamic(() => import("./_components/preview"), { ssr: false }) as React.ComponentType<{
+  html: string;
+  css: string;
+  js: string;
+}>;
 
 const DEFAULT_HTML =
   '<h1>Hello CodePen!</h1>\n<p>Start editing to see magic happen.</p>';
@@ -28,13 +37,13 @@ function App() {
   const getFileContent = () => {
     switch (activeFile) {
       case "HTML":
-        return { language: "html", value: html, setValue: setHtml };
+        return { language: "html" as "html", value: html, setValue: setHtml };
       case "CSS":
-        return { language: "css", value: css, setValue: setCss };
+        return { language: "css" as "css", value: css, setValue: setCss };
       case "JS":
-        return { language: "javascript", value: js, setValue: setJs };
+        return { language: "javascript" as "javascript", value: js, setValue: setJs };
       default:
-        return { language: "html", value: html, setValue: setHtml };
+        return { language: "html" as "html", value: html, setValue: setHtml };
     }
   };
 
@@ -83,7 +92,7 @@ function App() {
               language={language}
               value={value}
               onChange={setValue} // Correctly set the value for the editor
-              className="h-full"
+              
             />
           </div>
         </div>
