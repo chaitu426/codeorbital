@@ -19,8 +19,11 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "SAAS project",
+  title: "CodeOrbital",
   description: "Share and run code snippets",
+  icons: {
+    icon: "/favicon.ico", // Path to your favicon
+  },
 };
 
 export default function RootLayout({
