@@ -6,9 +6,9 @@ const previews: Record<string, { html: string; css: string; js: string }> = {};
 // ✅ Handle POST request (Save snippet)
 export async function POST(
     req: NextRequest,
-    context: { params: { userId: string } }
+    context: { params: Promise<{ userId: string }> }
 ) {
-    const { userId } = context.params;
+    const { userId } = await context.params;
     if (!userId) {
         return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
     }
@@ -29,11 +29,11 @@ export async function POST(
 }
 
 // ✅ Handle GET request (Retrieve preview)
-export  function GET(
+export async function GET(
     req: NextRequest,
-    context: { params: { userId: string } }
+    context: { params: Promise<{ userId: string }> }
 ) {
-    const { userId } = context.params;
+    const { userId } = await context.params;
     if (!previews[userId]) {
         return NextResponse.json({ error: "Preview not found" }, { status: 404 });
     }
