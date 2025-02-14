@@ -4,10 +4,8 @@ import { NextResponse } from "next/server";
 const previews: Record<string, { html: string; css: string; js: string }> = {};
 
 // ✅ Handle POST request (Save snippet)
-export async function POST(req: Request) {
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
-
+export async function POST(req: Request, { params }: { params: { userId: string } }) {
+    const { userId } = params;
     if (!userId) {
         return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
     }
@@ -28,11 +26,9 @@ export async function POST(req: Request) {
 }
 
 // ✅ Handle GET request (Retrieve preview)
-export async function GET(req: Request) {
-    const { searchParams } = new URL(req.url);
-    const userId = searchParams.get("userId");
-
-    if (!userId || !previews[userId]) {
+export async function GET(req: Request, context:{ params: { userId: string } }) {
+    const { userId } = context.params;;
+    if (!previews[userId]) {
         return NextResponse.json({ error: "Preview not found" }, { status: 404 });
     }
 
@@ -60,10 +56,6 @@ export async function GET(req: Request) {
 // ✅ Allow OPTIONS request (Fix CORS issues)
 export async function OPTIONS() {
     return new NextResponse(null, {
-        headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-            "Access-Control-Allow-Headers": "Content-Type",
-        },
+        headers: { "Allow": "GET, POST, OPTIONS" },
     });
 }
