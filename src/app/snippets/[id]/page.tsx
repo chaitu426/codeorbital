@@ -46,7 +46,7 @@ function SnippetDetailPage() {
   
     if (response.ok) {
       // Open preview after saving
-      const previewUrl = `http://localhost:3000/api/preview/${userId}`;
+      const previewUrl = `https://codeorbital.vercel.app//api/preview/${userId}`;
       console.log("Opening preview:", previewUrl);
       window.open(previewUrl, "_blank");
     } else {
