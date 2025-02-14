@@ -26,8 +26,8 @@ export async function POST(req: NextRequest, { params }: { params: { userId: str
 }
 
 // ✅ Handle GET request (Retrieve preview)
-export async function GET(req: NextRequest, context:{ params: { userId: string } }) {
-    const { userId } = context.params;;
+export async function GET(req: NextRequest, { params }: { params: { userId: string } }) {
+    const { userId } = params;
     if (!previews[userId]) {
         return NextResponse.json({ error: "Preview not found" }, { status: 404 });
     }
