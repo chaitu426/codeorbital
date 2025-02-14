@@ -29,7 +29,6 @@ function SnippetDetailPage() {
   const handleClick = async () => {
     const userId = snippet.userId;
     
-  
     console.log("Debugging userId and snippetId:", userId, snippetId);
   
     if (!userId || !snippetId) {
@@ -37,22 +36,22 @@ function SnippetDetailPage() {
       return;
     }
   
-    // Save snippet first
-    const response = await fetch(`/api/preview/${userId}`, {
-      method: "POST",
+    // Corrected API request (NO body in GET request)
+    const response = await fetch(`/api/preview/${userId}?snippetId=${snippetId}`, {
+      method: "GET",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ snippet }),
     });
   
     if (response.ok) {
-      // Open preview after saving
-      const previewUrl = `https://codeorbital.vercel.app//api/preview/${userId}`;
+      // Open preview after fetching
+      const previewUrl = `https://codeorbital.vercel.app/api/preview/${userId}?snippetId=${snippetId}`;
       console.log("Opening preview:", previewUrl);
       window.open(previewUrl, "_blank");
     } else {
-      console.error("Failed to save preview");
+      console.error("Failed to fetch preview");
     }
   };
+  
   
 
   // Social Media Share Function
