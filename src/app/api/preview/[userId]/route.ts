@@ -10,7 +10,7 @@ if (!process.env.NEXT_PUBLIC_CONVEX_URL) {
 const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL);
 
 // ✅ Handle GET request (Retrieve snippet and generate preview)
-export async function GET(req: NextRequest, context: { params: { userId: string } }) {
+export async function GET(req: NextRequest, { params }: { params: { userId: string } }) {
     const { searchParams } = new URL(req.url);
     const snippetId = searchParams.get("snippetId");
   
@@ -71,4 +71,3 @@ export async function GET(req: NextRequest, context: { params: { userId: string 
       return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
   }
-  
