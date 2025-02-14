@@ -1,11 +1,13 @@
 import { NextResponse, NextRequest } from "next/server";
-// import type { NextRequestContext } from "next/server";
 
 // Temporary storage for previews
 const previews: Record<string, { html: string; css: string; js: string }> = {};
 
 // ✅ Handle POST request (Save snippet)
-export async function POST(req: NextRequest, context: { params: { userId: string } }) {
+export async function POST(
+    req: NextRequest,
+    context: { params: { userId: string } }
+) {
     const { userId } = context.params;
     if (!userId) {
         return NextResponse.json({ error: "Invalid userId" }, { status: 400 });
@@ -27,7 +29,10 @@ export async function POST(req: NextRequest, context: { params: { userId: string
 }
 
 // ✅ Handle GET request (Retrieve preview)
-export async function GET(req: NextRequest, context: { params: { userId: string } }) {
+export async function GET(
+    req: NextRequest,
+    context: { params: { userId: string } }
+) {
     const { userId } = context.params;
     if (!previews[userId]) {
         return NextResponse.json({ error: "Preview not found" }, { status: 404 });
