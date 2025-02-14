@@ -29,7 +29,7 @@ export async function POST(
 }
 
 // ✅ Handle GET request (Retrieve preview)
-export async function GET(
+export  function GET(
     req: NextRequest,
     context: { params: { userId: string } }
 ) {

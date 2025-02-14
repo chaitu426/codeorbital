@@ -6,7 +6,7 @@
     "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
-    "build": "NEXT_IGNORE_BUILD_ERRORS=true next build && next lint"
+    "build": "next build && next lint"
   },
   "dependencies": {
     "@aduh95/viz.js": "^3.7.0",
