@@ -7,7 +7,7 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import SnippetLoadingSkeleton from "./_components/SnippetLoadingSkeleton";
 import NavigationHeader from "@/components/NavigationHeader";
-import { Clock, Code, MessageSquare, User } from "lucide-react";
+import { Clock, Code, MessageSquare, Rocket, Trash2, User } from "lucide-react";
 import { Editor } from "@monaco-editor/react";
 import { defineMonacoThemes, LANGUAGE_CONFIG } from "@/app/(root)/_constants";
 import CopyButton from "./_components/CopyButton";
@@ -17,31 +17,34 @@ import Modal from "@/components/Modal";
 
 function SnippetDetailPage() {
   const snippetId = useParams().id;
-  
+
 
   const snippet = useQuery(api.snippets.getSnippetById, { snippetId: snippetId as Id<"snippets"> });
   const comments = useQuery(api.snippets.getComments, { snippetId: snippetId as Id<"snippets"> });
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isHosting, setIsHosting] = useState(false);
 
   if (snippet === undefined) return <SnippetLoadingSkeleton />;
   const imagePath = snippet.code ? `/${snippet.language}.png` : `/web.png`;
 
-  const handleClick = async () => {
+  const handleHosting = async () => {
+
+
     const userId = snippet.userId;
-    
+
     console.log("Debugging userId and snippetId:", userId, snippetId);
-  
+
     if (!userId || !snippetId) {
       console.error("Missing userId or snippetId");
       return;
     }
-  
+
     // Corrected API request (NO body in GET request)
     const response = await fetch(`/api/preview/${userId}?snippetId=${snippetId}`, {
       method: "GET",
       headers: { "Content-Type": "application/json" },
     });
-  
+
     if (response.ok) {
       // Open preview after fetching
       const previewUrl = `https://codeorbital.vercel.app/api/preview/${userId}?snippetId=${snippetId}`;
@@ -51,8 +54,9 @@ function SnippetDetailPage() {
       console.error("Failed to fetch preview");
     }
   };
-  
-  
+  const { user } = useUser();
+
+
 
   // Social Media Share Function
   const handleSocialShare = (platform: string) => {
@@ -210,10 +214,42 @@ function SnippetDetailPage() {
 
 
 
+
+
                 {/* Live Preview */}
-                <div className="">
+                <div className=""><div className="flex space-x-4">
                   <h3 className="text-lg px-6 font-medium text-gray-400 uppercase mt-5">Preview</h3>
-                  
+
+                  {user?.id === snippet.userId && (
+                    <div className="z-10 py-4" onClick={(e) => e.preventDefault()}>
+                      <button
+                        onClick={handleHosting}
+                        disabled={isHosting}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 shadow-md
+        ${isHosting
+                            ? "bg-blue-500/20 text-blue-400 cursor-not-allowed"
+                            : "bg-blue-600 text-white hover:bg-blue-700"
+                          }
+      `}
+                      >
+                        {isHosting ? (
+                          <>
+                            <div className="size-4 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
+                            Hosting...
+                          </>
+                        ) : (
+                          <>
+                            <Rocket className="size-4" />
+                            Host Preview
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  )}
+
+
+                </div>
+
                   <div className="mt-4 bg-white p-4 rounded-lg shadow-lg">
                     <iframe
                       className="w-full h-[300px] border-none"
@@ -229,15 +265,7 @@ function SnippetDetailPage() {
         </div>
       </main>
 
-      <div className="flex space-x-4">
-              <button
-                onClick={() => handleClick()}
-                className="bg-blue-600 text-white px-4 py-2 rounded-lg"
-              >
-                host
-              </button>
-              
-            </div>
+
 
       {/* Share Modal */}
       {isShareModalOpen && (
