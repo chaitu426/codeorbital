@@ -83,7 +83,36 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
       set({ isRunning: true, error: null, output: "" });
 
       try {
-        const runtime = LANGUAGE_CONFIG[language].pistonRuntime;//Engineer man knowledge center public free api for code exicution
+        let userInput = "";
+
+        // Simple heuristic to check if input is likely required
+        const requiresInput =
+          code.includes("cin") ||          // C++
+          code.includes("scanf") ||        // C
+          code.includes("fmt.Scan") ||     // Go
+          code.includes("input") ||        // Python
+          code.includes("readLine") ||     // Kotlin, JavaScript (Node.js), Swift
+          code.includes("next") ||         // Java (Scanner)
+          code.includes("gets") ||         // Ruby
+          code.includes("read_line") ||    // Rust, Haskell
+          code.includes("fgets") ||        // PHP
+          code.includes("Console.ReadLine") ||  // C#
+          code.includes("read -p") ||       // Bash
+          code.includes("<STDIN>") ||       // Perl
+          code.includes("scala.io.StdIn.readLine") || // Scala
+          code.includes("stdin.readLineSync") || // Dart
+          code.includes("readline") ||      // Julia, Node.js
+          code.includes("io.read") ||       // Lua
+          code.includes("IO.gets") ||       // Elixir
+          code.includes("io:get_line");     // Erlang
+
+
+        if (requiresInput) {
+          userInput = prompt("Enter the input values for your code (separate by spaces if multiple):") || "";
+        }
+
+        const runtime = LANGUAGE_CONFIG[language].pistonRuntime;
+
         const response = await fetch("https://emkc.org/api/v2/piston/execute", {
           method: "POST",
           headers: {
@@ -93,30 +122,14 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
             language: runtime.language,
             version: runtime.version,
             files: [{ content: code }],
+            stdin: userInput, // Include user input in the execution request
           }),
         });
 
         const data = await response.json();
 
-        console.log("data back from piston:", data);
-
-        // handle API-level erros
         if (data.message) {
           set({ error: data.message, executionResult: { code, output: "", error: data.message } });
-          return;
-        }
-
-        // handle compilation errors
-        if (data.compile && data.compile.code !== 0) {
-          const error = data.compile.stderr || data.compile.output;
-          set({
-            error,
-            executionResult: {
-              code,
-              output: "",
-              error,
-            },
-          });
           return;
         }
 
@@ -124,27 +137,19 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
           const error = data.run.stderr || data.run.output;
           set({
             error,
-            executionResult: {
-              code,
-              output: "",
-              error,
-            },
+            executionResult: { code, output: "", error },
           });
           return;
         }
 
-        // if we get here, execution was successful
         const output = data.run.output;
 
         set({
           output: output.trim(),
           error: null,
-          executionResult: {
-            code,
-            output: output.trim(),
-            error: null,
-          },
+          executionResult: { code, output: output.trim(), error: null },
         });
+
       } catch (error) {
         console.log("Error running code:", error);
         set({
@@ -155,6 +160,8 @@ export const useCodeEditorStore = create<CodeEditorState>((set, get) => {
         set({ isRunning: false });
       }
     },
+
+
   };
 });
 

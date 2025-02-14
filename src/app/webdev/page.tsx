@@ -21,10 +21,15 @@ const Preview = dynamic(() => import("./_components/preview"), { ssr: false }) a
   js: string;
 }>;
 
-const DEFAULT_HTML =
-  '<h1>Hello CodePen!</h1>\n<p>Start editing to see magic happen.</p>';
-const DEFAULT_CSS = "h1 { color: #2563eb; }\np { color: #4b5563; }";
-const DEFAULT_JS = 'console.log("Welcome to CodePen Clone!");';
+const DEFAULT_HTML = 
+  '<!DOCTYPE html>\n<html lang="en">\n<head>\n  <meta charset="UTF-8">\n  <meta name="viewport" content="width=device-width, initial-scale=1.0">\n  <title>CodeOrbital Playground</title>\n  <link rel="stylesheet" href="styles.css">\n</head>\n<body>\n  <main class="wrapper">\n    <h1>🚀 CodeOrbital</h1>\n    <p>Craft. Code. Create.</p>\n    <button onclick="updateText()">Click Me</button>\n  </main>\n  <script src="script.js"></script>\n</body>\n</html>';
+
+const DEFAULT_CSS = 
+  "*, *::before, *::after {\n  margin: 0;\n  padding: 0;\n  box-sizing: border-box;\n}\n\nbody {\n  font-family: 'Inter', sans-serif;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  height: 100vh;\n  background: #111827;\n  color: #f9fafb;\n  text-align: center;\n}\n\n.wrapper {\n  padding: 2rem;\n  border-radius: 12px;\n  background: #1f2937;\n  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);\n}\n\nh1 {\n  font-size: 2rem;\n  font-weight: 600;\n}\n\np {\n  margin-top: 0.5rem;\n  font-size: 1.2rem;\n  color: #9ca3af;\n}\n\nbutton {\n  margin-top: 1.5rem;\n  padding: 10px 20px;\n  font-size: 1rem;\n  font-weight: 500;\n  color: #111827;\n  background: #facc15;\n  border: none;\n  border-radius: 8px;\n  cursor: pointer;\n  transition: background 0.3s;\n}\n\nbutton:hover {\n  background: #eab308;\n}";
+
+const DEFAULT_JS = 
+  "console.log('🚀 Welcome to CodeOrbital!');\n\nfunction updateText() {\n  const message = document.querySelector('p');\n  message.innerText = 'Keep building amazing things! 🚀';\n  message.style.color = '#facc15';\n}";
+
 
 function App() {
   const [activeFile, setActiveFile] = useState<"HTML" | "CSS" | "JS">("HTML");
@@ -65,11 +70,10 @@ function App() {
                 <button
                   key={file}
                   onClick={() => setActiveFile(file as "HTML" | "CSS" | "JS")}
-                  className={`px-4 py-2 text-sm ${
-                    activeFile === file
+                  className={`px-4 py-2 text-sm ${activeFile === file
                       ? "bg-[#0d1117] text-blue-400"
                       : "text-gray-400"
-                  } hover:bg-[#1e1e1e]`}
+                    } hover:bg-[#1e1e1e]`}
                 >
                   {file}
                 </button>
@@ -92,7 +96,7 @@ function App() {
               language={language}
               value={value}
               onChange={setValue} // Correctly set the value for the editor
-              
+
             />
           </div>
         </div>

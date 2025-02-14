@@ -1,6 +1,7 @@
 "use client";
 
 import { useQuery } from "convex/react";
+import { useUser } from "@clerk/nextjs";
 import { useParams } from "next/navigation";
 import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
@@ -24,6 +25,35 @@ function SnippetDetailPage() {
 
   if (snippet === undefined) return <SnippetLoadingSkeleton />;
   const imagePath = snippet.code ? `/${snippet.language}.png` : `/web.png`;
+
+  const handleClick = async () => {
+    const userId = snippet.userId;
+    
+  
+    console.log("Debugging userId and snippetId:", userId, snippetId);
+  
+    if (!userId || !snippetId) {
+      console.error("Missing userId or snippetId");
+      return;
+    }
+  
+    // Save snippet first
+    const response = await fetch(`/api/preview/${userId}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ snippet }),
+    });
+  
+    if (response.ok) {
+      // Open preview after saving
+      const previewUrl = `https://codeorbital.vercel.app/api/preview/${userId}`;
+      console.log("Opening preview:", previewUrl);
+      window.open(previewUrl, "_blank");
+    } else {
+      console.error("Failed to save preview");
+    }
+  };
+  
 
   // Social Media Share Function
   const handleSocialShare = (platform: string) => {
@@ -199,6 +229,16 @@ function SnippetDetailPage() {
           <Comments snippetId={snippet._id} />
         </div>
       </main>
+
+      <div className="flex space-x-4">
+              <button
+                onClick={() => handleClick()}
+                className="bg-blue-600 text-white px-4 py-2 rounded-lg"
+              >
+                host
+              </button>
+              
+            </div>
 
       {/* Share Modal */}
       {isShareModalOpen && (

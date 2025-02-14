@@ -11,6 +11,8 @@
   "dependencies": {
     "@aduh95/viz.js": "^3.7.0",
     "@clerk/nextjs": "^6.6.0",
+    "@codesandbox/sandpack-react": "^2.19.11",
+    "@codesandbox/sandpack-themes": "^2.0.21",
     "@fontsource/dm-sans": "^5.1.1",
     "@google/generative-ai": "^0.21.0",
     "@monaco-editor/react": "^4.6.0",
@@ -26,6 +28,7 @@
     "ipfs-http-client": "^60.0.1",
     "jspdf": "^2.5.2",
     "lucide-react": "^0.464.0",
+    "nanoid": "^5.0.9",
     "next": "15.0.3",
     "node-fetch": "^3.3.2",
     "node-polyfill-webpack-plugin": "^4.1.0",
