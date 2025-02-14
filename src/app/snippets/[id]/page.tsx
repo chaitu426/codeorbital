@@ -23,11 +23,13 @@ function SnippetDetailPage() {
   const comments = useQuery(api.snippets.getComments, { snippetId: snippetId as Id<"snippets"> });
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isHosting, setIsHosting] = useState(false);
+  const { user } = useUser();
 
   if (snippet === undefined) return <SnippetLoadingSkeleton />;
   const imagePath = snippet.code ? `/${snippet.language}.png` : `/web.png`;
 
   const handleHosting = async () => {
+    
 
 
     const userId = snippet.userId;
@@ -54,7 +56,7 @@ function SnippetDetailPage() {
       console.error("Failed to fetch preview");
     }
   };
-  const { user } = useUser();
+  
 
 
 
