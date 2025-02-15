@@ -15,6 +15,7 @@ import Comments from "./_components/Comments";
 import { useState, useEffect } from "react";
 import Modal from "@/components/Modal";
 import { useMutation } from "convex/react";
+import toast from "react-hot-toast";
 
 
 function SnippetDetailPage() {
@@ -91,7 +92,7 @@ function SnippetDetailPage() {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(hostedUrl);
-    alert("URL copied to clipboard!"); // You can replace this with a toast notification
+    toast.success("URL copied successfully"); // You can replace this with a toast notification
   };
 
 

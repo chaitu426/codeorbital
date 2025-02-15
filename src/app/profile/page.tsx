@@ -13,6 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import StarButton from "@/components/StarButton";
 import CodeBlock from "./_components/CodeBlock";
+import toast from "react-hot-toast";
 
 const TABS = [
   {
@@ -320,7 +321,7 @@ function ProfilePage() {
                               </h2>
                               <ClipboardList onClick={() => {
                                 navigator.clipboard.writeText(preview.url);
-                                alert("URL copied to clipboard!"); // You can replace this with a toast notification
+                                toast.success("URL copied successfully"); // You can replace this with a toast notification
                               }} />
                             </div>
                             <div className="flex items-center justify-between text-sm text-gray-400">

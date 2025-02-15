@@ -26,6 +26,13 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico", // Path to your favicon
   },
+  openGraph: {
+    type: "website",
+    locale: "en_IE",
+    url: "https://codeorbital.com",
+    siteName: "CodeOrbital",
+  },
+  
 };
 
 export default function RootLayout({
