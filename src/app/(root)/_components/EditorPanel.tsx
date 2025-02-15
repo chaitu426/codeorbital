@@ -129,7 +129,7 @@ function EditorPanel() {
 
 
   const MODEL_NAME = "gemini-2.0-flash";
-  const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string; // Replace with your actual API key securely
+  const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY; // Replace with your actual API key securely
 
   async function runChat(prompt: string): Promise<string> {
     try {
