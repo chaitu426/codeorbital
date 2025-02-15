@@ -7,7 +7,7 @@ import { api } from "../../../convex/_generated/api";
 import NavigationHeader from "@/components/NavigationHeader";
 import ProfileHeader from "./_components/ProfileHeader";
 import ProfileHeaderSkeleton from "./_components/ProfileHeaderSkeleton";
-import { ChevronRight, Clock, Code, ListVideo, Loader2, Star } from "lucide-react";
+import { ChevronRight, ClipboardList, Clock, Code, ListVideo, Loader2, Pointer, ScreenShare, Star } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -25,12 +25,21 @@ const TABS = [
     label: "Starred Snippets",
     icon: Star,
   },
+  {
+    id: "hosted",
+    label: "Hosted Previews",
+    icon: ScreenShare,
+  },
 ];
 
 function ProfilePage() {
   const { user, isLoaded } = useUser();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<"executions" | "starred">("executions");
+  const [activeTab, setActiveTab] = useState<"executions" | "starred" | "hosted">("executions");
+
+
+
+  const userPreviews = useQuery(api.snippets.getPreviewsByUser, { userId: user?.id ?? "" });
 
   const userStats = useQuery(api.codeExecutions.getUserStats, {
     userId: user?.id ?? "",
@@ -84,9 +93,8 @@ function ProfilePage() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id as "executions" | "starred")}
-                  className={`group flex items-center gap-2 px-6 py-2.5 rounded-lg transition-all duration-200 relative overflow-hidden ${
-                    activeTab === tab.id ? "text-blue-400" : "text-gray-400 hover:text-gray-300"
-                  }`}
+                  className={`group flex items-center gap-2 px-6 py-2.5 rounded-lg transition-all duration-200 relative overflow-hidden ${activeTab === tab.id ? "text-blue-400" : "text-gray-400 hover:text-gray-300"
+                    }`}
                 >
                   {activeTab === tab.id && (
                     <motion.div
@@ -148,11 +156,10 @@ function ProfilePage() {
                             </div>
                             <div className="flex items-center gap-2">
                               <span
-                                className={`text-xs px-2 py-0.5 rounded-full ${
-                                  execution.error
-                                    ? "bg-red-500/10 text-red-400"
-                                    : "bg-green-500/10 text-green-400"
-                                }`}
+                                className={`text-xs px-2 py-0.5 rounded-full ${execution.error
+                                  ? "bg-red-500/10 text-red-400"
+                                  : "bg-green-500/10 text-green-400"
+                                  }`}
                               >
                                 {execution.error ? "Error" : "Success"}
                               </span>
@@ -168,9 +175,8 @@ function ProfilePage() {
                           <div className="mt-4 p-4 rounded-lg bg-black/40">
                             <h4 className="text-sm font-medium text-gray-400 mb-2">Output</h4>
                             <pre
-                              className={`text-sm ${
-                                execution.error ? "text-red-400" : "text-green-400"
-                              }`}
+                              className={`text-sm ${execution.error ? "text-red-400" : "text-green-400"
+                                }`}
                             >
                               {execution.error || execution.output}
                             </pre>
@@ -284,6 +290,61 @@ function ProfilePage() {
                       </p>
                     </div>
                   )}
+                </div>
+              )}
+
+              {activeTab === "hosted" && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {userPreviews?.map((preview) => (
+                    <div key={preview._id} className="group relative">
+                      <Link href={`${preview.url}`}>
+                        <div
+                          className="bg-black/20 rounded-xl border border-gray-800/50 hover:border-gray-700/50 
+                          transition-all duration-300 overflow-hidden h-full group-hover:transform
+                        group-hover:scale-[1.02]"
+                        >
+                          <div className="p-6">
+                            <div className="flex items-center justify-between mb-4">
+                              <div className="flex items-center gap-3">
+                                <div className="relative">
+                                  <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg blur opacity-20 group-hover:opacity-30 transition-opacity" />
+
+                                </div>
+
+                              </div>
+
+                            </div>
+                            <div className="flex items-center justify-between mb-4">
+                              <h2 className="text-xl font-semibold text-white mb-3 line-clamp-1 group-hover:text-blue-400 transition-colors">
+                                {preview.pretitle}
+                              </h2>
+                              <ClipboardList onClick={() => {
+                                navigator.clipboard.writeText(preview.url);
+                                alert("URL copied to clipboard!"); // You can replace this with a toast notification
+                              }} />
+                            </div>
+                            <div className="flex items-center justify-between text-sm text-gray-400">
+                              <div className="flex items-center gap-2">
+                                <Clock className="w-4 h-4" />
+                                <span>{new Date(preview._creationTime).toLocaleDateString()}</span>
+                              </div>
+                              <ChevronRight className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" />
+                            </div>
+                          </div>
+                          <div className="px-6 pb-6">
+                            <div className="bg-black/30 rounded-lg p-4 overflow-hidden">
+                              <pre className="text-sm text-gray-300 font-mono line-clamp-3">
+                                {preview.url}
+                              </pre>
+                            </div>
+                          </div>
+                        </div>
+                      </Link>
+
+
+                    </div>
+                  ))}
+
                 </div>
               )}
             </motion.div>

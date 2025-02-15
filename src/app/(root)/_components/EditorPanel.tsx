@@ -128,8 +128,8 @@ function EditorPanel() {
   };
 
 
-  const MODEL_NAME = "gemini-1.0-pro";
-  const API_KEY = "AIzaSyB-UgW-MuVjBm-NBem3_SF_zUHNZ35hjT8"; // Replace with your actual API key securely
+  const MODEL_NAME = "gemini-2.0-flash";
+  const API_KEY = process.env.NEXT_PUBLIC_GEMINI_API_KEY as string; // Replace with your actual API key securely
 
   async function runChat(prompt: string): Promise<string> {
     try {
@@ -138,14 +138,29 @@ function EditorPanel() {
       }
 
       // Initialize the Generative AI instance
+      if (!API_KEY) {
+        throw new Error("API key is not defined");
+      }
       const genAI = new GoogleGenerativeAI(API_KEY);
 
       // Load the specified generative model
-      const model = genAI.getGenerativeModel({ model: MODEL_NAME });
+      const model = genAI.getGenerativeModel({ model: MODEL_NAME, systemInstruction: "You are an extremely intelligent and experienced software engineer with the ability to analyze, optimize, and solve any coding problems in all lang. Your task is to review the provided code carefully. If the code is incorrect or incomplete, you will correct or complete it, ensuring it works perfectly. If the code is already functional, you will suggest improvements for better execution, optimization, or maintainability. Always provide insightful feedback and ensure the solution is efficient and follows best practices also give all spcifications af code such as time and space complexcity and other matrics of code in code format." });
 
       // Define the context for the AI response
-      const context = `
-        You are an extremely intelligent and experienced software engineer with the ability to analyze, optimize, and solve any coding problems. Your task is to review the provided code carefully. If the code is incorrect or incomplete, you will correct or complete it, ensuring it works perfectly. If the code is already functional, you will suggest improvements for better execution, optimization, or maintainability. Always provide insightful feedback and ensure the solution is efficient and follows best practices also give all spcifications af code such as time and space complexcity and other matrics of code in code format.
+      const context = `Review the following ${language} code for errors and inefficiencies.
+
+- If errors exist, correct them and return the fixed code.
+- If the code is correct, optimize it for performance, readability, or best practices.
+- Find the Stack Overflow discussion for the related topic and provide the link to the discussion.
+- Return only the corrected or optimized code.
+- The response structure should be as follows:
+  - **Code:** (Provide the corrected or optimized code block)
+  - **Explanations:** (If any changes were made, explain why)
+  - **Sources:** (List any references or relevant documentation)
+  - **Links:** (Provide the Stack Overflow discussion link)
+
+strictly follow the above instructions.
+        
 
       `;
       const fullPrompt = `${context} ${prompt}`;
@@ -189,7 +204,9 @@ function EditorPanel() {
       const result = await chat.sendMessage(fullPrompt);
 
       // Return the AI response text
+      console.log('result', result.response);
       return result.response.text();
+
     } catch (error) {
       console.error("Error during AI suggestion generation:", error);
       throw new Error("Unable to process the input. Please check your network or API configuration.");
@@ -207,6 +224,7 @@ function EditorPanel() {
       const response = await runChat(editorContent);
       setAiResponse(response);
       setIsLoading(false); // Stop loading
+      console.log('result', response);
       // You can display this suggestion in the UI or handle it as needed
     } catch (error) {
       alert("Failed to fetch AI suggestions. Please try again.");
@@ -369,38 +387,94 @@ function EditorPanel() {
         {/* AI Suggestions Modal */}
         {aiResponse && (
           <Modal onClose={() => setAiResponse("")}>
-            <div className="w-full max-w-3xl overflow-y-auto max-h-[80vh]">
-              <h2 className="text-lg font-bold mb-4">AI Suggestions</h2>
-              <div className="space-y-4">
+            <div className="w-full max-w-3xl overflow-y-auto max-h-[80vh] p-4 bg-gray-900 rounded-lg shadow-lg">
+              <h2 className="text-lg font-bold mb-4 text-white">AI Suggestions</h2>
+              <div className="space-y-4 text-white">
                 {isLoading ? (
                   <LoadingSpinner />
                 ) : (
-                  aiResponse.split("```").map((block, index) => {
-                    if (index % 2 !== 0) {
-                      // Render code block
+                  (() => {
+                    let response;
+                    try {
+                      let cleanResponse = aiResponse.trim();
+
+                      // Remove unnecessary backticks if they exist
+                      if (cleanResponse.startsWith("```json")) {
+                        cleanResponse = cleanResponse.replace(/^```json/, "").replace(/```$/, "").trim();
+                      }
+
+                      response = JSON.parse(cleanResponse);
+
                       return (
-                        <SyntaxHighlighter
-                          key={index}
-                          language={language} // Dynamic language support
-                          style={dracula}
-                          className="rounded-lg border border-gray-600"
-                        >
-                          {block.trim()}
-                        </SyntaxHighlighter>
+                        <div className="space-y-4">
+                          {/* Render the generated code */}
+                          {response.Code && (
+                            <div>
+                              <h3 className="text-md font-semibold">Generated Code:</h3>
+                              <pre className="p-3 bg-gray-800 rounded-md overflow-x-auto text-sm">
+                                <code>{response.Code}</code>
+                              </pre>
+                            </div>
+                          )}
+
+                          {/* Render the explanations */}
+                          {response.Explanations && (
+                            <div>
+                              <h3 className="text-md font-semibold">Explanations:</h3>
+                              <p className="text-gray-300">{response.Explanations}</p>
+                            </div>
+                          )}
+
+                          {/* Render the sources */}
+                          {response.Sources?.length > 0 && (
+                            <div>
+                              <h3 className="text-md font-semibold">Sources:</h3>
+                              <ul className="list-disc list-inside text-gray-300">
+                                {response.Sources.map((source: string, index: number) => (
+                                  <li key={index}>
+                                    <a
+                                      href={source}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-blue-400 hover:underline"
+                                    >
+                                      {source}
+                                    </a>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          )}
+
+                          {/* Render additional links */}
+                          {response.Links && (
+                            <div>
+                              <h3 className="text-md font-semibold">Reference Link:</h3>
+                              <a
+                                href={response.Links}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-blue-400 hover:underline"
+                              >
+                                {response.Links}
+                              </a>
+                            </div>
+                          )}
+                        </div>
                       );
+                    } catch (error) {
+                      console.error("JSON Parsing Error:", error, aiResponse);
+                      return <p className="text-red-400">Error parsing AI response. Please check the response format.</p>;
                     }
-                    // Render text block
-                    return (
-                      <p key={index} className="text-sm text-gray-300 leading-relaxed">
-                        {block.trim()}
-                      </p>
-                    );
-                  })
+                  })()
                 )}
               </div>
             </div>
           </Modal>
         )}
+
+
+
 
 
       </div>

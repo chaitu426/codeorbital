@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
 
 export const createSnippet = mutation({
   args: {
@@ -230,3 +231,40 @@ export const getStarredSnippets = query({
     return snippets.filter((snippet) => snippet !== null);
   },
 });
+
+
+
+export const createPreview = mutation({
+  args: {
+    userId: v.string(),
+    snippetId: v.id("snippets"),
+    url: v.string(),
+    pretitle: v.string(),
+  },
+  handler: async (ctx, { userId, snippetId, url, pretitle }) => {
+    return await ctx.db.insert("preview", { userId, snippetId, url,pretitle });
+  },
+});
+
+export const getPreview = query(async ({ db }, { snippetId }: { snippetId: Id<"snippets">  }) => {
+  const preview = await db
+    .query("preview")
+    .withIndex("by_snippet_id", (q) => q.eq("snippetId", snippetId))
+    .first();
+
+  return preview ? preview.url : null;
+});
+
+
+export const getPreviewsByUser = query(async ({ db }, { userId }: { userId: string }) => {
+  const previews = await db
+    .query("preview")
+    .withIndex("by_user_id", (q) => q.eq("userId", userId))
+    .collect(); // Collect all matching previews
+
+  return previews;
+});
+
+
+
+

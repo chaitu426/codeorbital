@@ -1,5 +1,7 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { url } from "inspector";
+import { title } from "process";
 
 export default defineSchema({
   users: defineTable({
@@ -19,6 +21,15 @@ export default defineSchema({
     output: v.optional(v.string()),
     error: v.optional(v.string()),
   }).index("by_user_id", ["userId"]),
+
+  preview: defineTable({
+    userId: v.string(),
+    snippetId: v.id("snippets"),
+    pretitle: v.string(),
+    url: v.string(),
+    
+  }).index("by_user_id", ["userId"])
+  .index("by_snippet_id", ["snippetId"]),
 
   snippets: defineTable({
     userId: v.string(),

@@ -7,29 +7,48 @@ import { api } from "../../../../convex/_generated/api";
 import { Id } from "../../../../convex/_generated/dataModel";
 import SnippetLoadingSkeleton from "./_components/SnippetLoadingSkeleton";
 import NavigationHeader from "@/components/NavigationHeader";
-import { Clock, Code, MessageSquare, Rocket, Trash2, User } from "lucide-react";
+import { Clock, Code, MessageSquare, Rocket, Trash2, User,Clipboard } from "lucide-react";
 import { Editor } from "@monaco-editor/react";
 import { defineMonacoThemes, LANGUAGE_CONFIG } from "@/app/(root)/_constants";
 import CopyButton from "./_components/CopyButton";
 import Comments from "./_components/Comments";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "@/components/Modal";
+import { useMutation } from "convex/react";
+
 
 function SnippetDetailPage() {
   const snippetId = useParams().id;
+  
 
 
   const snippet = useQuery(api.snippets.getSnippetById, { snippetId: snippetId as Id<"snippets"> });
   const comments = useQuery(api.snippets.getComments, { snippetId: snippetId as Id<"snippets"> });
+  const hostedUrlfromdb = snippetId ? useQuery(api.snippets.getPreview, { snippetId: snippetId as Id<"snippets"> }) : undefined;
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isHosting, setIsHosting] = useState(false);
+  //const [isHosted, setIsHosted] = useState(false); // Track if hosted
+  const [hostedUrl, setHostedUrl] = useState(""); // Store hosted URL
   const { user } = useUser();
+  const createPreview = useMutation(api.snippets.createPreview); 
+
+  
+  
+  useEffect(() => {
+    if (hostedUrlfromdb) {
+      setHostedUrl(hostedUrlfromdb);
+    }
+  }, [hostedUrlfromdb]);
 
   if (snippet === undefined) return <SnippetLoadingSkeleton />;
   const imagePath = snippet.code ? `/${snippet.language}.png` : `/web.png`;
 
+  
+
   const handleHosting = async () => {
     
+    
+
 
 
     const userId = snippet.userId;
@@ -52,11 +71,29 @@ function SnippetDetailPage() {
       const previewUrl = `https://codeorbital.vercel.app/api/preview/${userId}?snippetId=${snippetId}`;
       console.log("Opening preview:", previewUrl);
       window.open(previewUrl, "_blank");
+      setHostedUrl(previewUrl);
+
+      await createPreview({
+        userId: user?.id || "",
+        snippetId: snippetId as Id<"snippets">,
+        url: previewUrl,
+        pretitle: snippet.title,
+      });
+
+       
+      setIsHosting(false);
     } else {
       console.error("Failed to fetch preview");
     }
+
+    
   };
-  
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(hostedUrl);
+    alert("URL copied to clipboard!"); // You can replace this with a toast notification
+  };
+
 
 
 
@@ -88,6 +125,8 @@ function SnippetDetailPage() {
   };
 
   return (
+
+    
     <div className="min-h-screen bg-[#0a0a0f]">
       <NavigationHeader />
 
@@ -223,31 +262,38 @@ function SnippetDetailPage() {
                   <h3 className="text-lg px-6 font-medium text-gray-400 uppercase mt-5">Preview</h3>
 
                   {user?.id === snippet.userId && (
-                    <div className="z-10 py-4" onClick={(e) => e.preventDefault()}>
-                      <button
-                        onClick={handleHosting}
-                        disabled={isHosting}
-                        className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 shadow-md
-        ${isHosting
-                            ? "bg-blue-500/20 text-blue-400 cursor-not-allowed"
-                            : "bg-blue-600 text-white hover:bg-blue-700"
-                          }
-      `}
-                      >
-                        {isHosting ? (
-                          <>
-                            <div className="size-4 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
-                            Hosting...
-                          </>
-                        ) : (
-                          <>
-                            <Rocket className="size-4" />
-                            Host Preview
-                          </>
-                        )}
-                      </button>
-                    </div>
+                <div className="py-4">
+                  {hostedUrl ? (
+                    <button
+                      onClick={copyToClipboard}
+                      className="flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 shadow-md bg-green-600 text-white hover:bg-green-700"
+                    >
+                      <Clipboard className="size-4" />
+                      Copy URL
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleHosting}
+                      disabled={isHosting}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium text-sm transition-all duration-300 shadow-md ${
+                        isHosting ? "bg-blue-500/20 text-blue-400 cursor-not-allowed" : "bg-blue-600 text-white hover:bg-blue-700"
+                      }`}
+                    >
+                      {isHosting ? (
+                        <>
+                          <div className="size-4 border-2 border-blue-400/30 border-t-blue-400 rounded-full animate-spin" />
+                          Hosting...
+                        </>
+                      ) : (
+                        <>
+                          <Rocket className="size-4" />
+                          Host Preview
+                        </>
+                      )}
+                    </button>
                   )}
+                </div>
+              )}
 
 
                 </div>

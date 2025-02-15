@@ -38,3 +38,17 @@ body {
     --tw-gradient-stops: #000, #200D42_34%, #4F21A1_65%, #A46EDB_82%;
   }
 } 
+
+/* Minimal custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}

@@ -10,6 +10,7 @@ interface EditorProps {
   className?: string;
 }
 
+
 const Editor: React.FC<EditorProps> = ({ language, value, onChange, className }) => {
   return (
     <div className={`h-full ${className} `}>

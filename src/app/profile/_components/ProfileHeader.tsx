@@ -1,10 +1,14 @@
 import { useQuery } from "convex/react";
+import html2canvas from "html2canvas";
 import { api } from "../../../../convex/_generated/api";
-import { Activity, Code2, Star, Timer, TrendingUp, Trophy, UserIcon, Zap } from "lucide-react";
+import { Activity, Captions, Code2, ScreenShare, Star, Timer, TrendingUp, Trophy, UserIcon, Zap } from "lucide-react";
+
 import { motion } from "framer-motion";
 import { Id } from "../../../../convex/_generated/dataModel";
 
 import { UserResource } from "@clerk/types";
+import { useRef } from "react";
+
 
 interface ProfileHeaderProps {
   userStats: {
@@ -15,6 +19,7 @@ interface ProfileHeaderProps {
     favoriteLanguage: string;
     languageStats: Record<string, number>;
     mostStarredLanguage: string;
+
   };
   userData: {
     _id: Id<"users">;
@@ -30,8 +35,12 @@ interface ProfileHeaderProps {
   user: UserResource;
 }
 
+
+
 function ProfileHeader({ userStats, userData, user }: ProfileHeaderProps) {
+  const profileRef = useRef<HTMLDivElement>(null);
   const starredSnippets = useQuery(api.snippets.getStarredSnippets);
+  const userPreviews = useQuery(api.snippets.getPreviewsByUser, { userId: user?.id ?? "" });
   const STATS = [
     {
       label: "Code Executions",
@@ -72,15 +81,70 @@ function ProfileHeader({ userStats, userData, user }: ProfileHeaderProps) {
         icon: TrendingUp,
       },
     },
+    {
+      label: "Hosted",
+      value: (userPreviews?.length ?? 0),
+      icon: ScreenShare,
+      color: "from-green-500 to-light-green-400",
+      gradient: "group-hover:via-light-green-400",
+      description: "previews hosted",
+      metric: {
+        label: "lang",
+        value: userStats?.favoriteLanguage ?? "N/A",
+        icon: TrendingUp,
+      },
+    },
   ];
 
+  const captureProfileImage = async () => {
+    if (profileRef.current) {
+      // Select elements to hide (Modify the selector based on what you want to exclude)
+      const elementsToHide = profileRef.current.querySelectorAll(".exclude-from-screenshot");
+
+      
+
+      // Ensure images and fonts are loaded
+      const images = profileRef.current.getElementsByTagName("img");
+      const loadPromises = Array.from(images).map((img) => {
+        return new Promise((resolve) => {
+          if (img.complete) resolve(true);
+          else img.onload = () => resolve(true);
+        });
+      });
+
+      await Promise.all(loadPromises);
+      await document.fonts.ready;
+
+      // Capture screenshot
+      const canvas = await html2canvas(profileRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        useCORS: true,
+      });
+
+      
+
+      // Download image
+      const imgURL = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
+      link.href = imgURL;
+      link.download = `${userData.name}-profile.png`;
+      link.click();
+    } else {
+      console.error("Error: profileRef is null");
+    }
+  };
+
+
+
   return (
-    <div
+    <div ref={profileRef}
       className="relative mb-8 bg-gradient-to-br from-[#12121a] to-[#1a1a2e] rounded-2xl p-8 border
      border-gray-800/50 overflow-hidden"
     >
       <div className="absolute inset-0 bg-grid-white/[0.02] bg-[size:32px]" />
-      <div className="relative flex items-center gap-8">
+      <div className="relative flex items-center gap-4">
+
         <div className="relative group">
           <div
             className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full 
@@ -114,10 +178,14 @@ function ProfileHeader({ userStats, userData, user }: ProfileHeaderProps) {
             {userData.email}
           </p>
         </div>
+        
+
+        <Captions onClick={captureProfileImage}/>
+        
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-6">
         {STATS.map((stat, index) => (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -165,4 +233,5 @@ function ProfileHeader({ userStats, userData, user }: ProfileHeaderProps) {
     </div>
   );
 }
-export default ProfileHeader;
+
+export default ProfileHeader
