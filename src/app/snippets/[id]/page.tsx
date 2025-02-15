@@ -24,7 +24,7 @@ function SnippetDetailPage() {
 
   const snippet = useQuery(api.snippets.getSnippetById, { snippetId: snippetId as Id<"snippets"> });
   const comments = useQuery(api.snippets.getComments, { snippetId: snippetId as Id<"snippets"> });
-  const hostedUrlfromdb = snippetId ? useQuery(api.snippets.getPreview, { snippetId: snippetId as Id<"snippets"> }) : undefined;
+  const hostedUrlfromdb = useQuery(api.snippets.getPreview, { snippetId: snippetId as Id<"snippets"> });
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isHosting, setIsHosting] = useState(false);
   //const [isHosted, setIsHosted] = useState(false); // Track if hosted
