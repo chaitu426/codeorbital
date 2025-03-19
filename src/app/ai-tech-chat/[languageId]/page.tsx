@@ -292,25 +292,34 @@ const TutorChat: React.FC = () => {
   useEffect(() => {
     if (!isTypingComplete && fullResponse) {
       const intervalId = setInterval(() => {
-        if (currentMessageIndex < fullResponse.length) {
-          setTypingText(fullResponse.substring(0, currentMessageIndex + 10));
-          setCurrentMessageIndex(prev => prev + 10);
-        } else {
-          setIsTypingComplete(true);
-          setTypingText('');
-
-          const aiMessage: ChatMessageProps = {
-            content: fullResponse,
-            role: 'assistant',
-            timestamp: new Date()
-          };
-          setMessages(prev => [...prev, aiMessage]);
-        }
+        setCurrentMessageIndex((prev) => {
+          const nextIndex = prev + 10;
+          if (nextIndex >= fullResponse.length) {
+            clearInterval(intervalId);
+            setIsTypingComplete(true);
+  
+            // Ensure the final message is shown completely
+            setTypingText(fullResponse);
+  
+            const aiMessage: ChatMessageProps = {
+              content: fullResponse,
+              role: 'assistant',
+              timestamp: new Date(),
+            };
+            setMessages((prev) => [...prev, aiMessage]);
+  
+            return fullResponse.length; // Stop updating index
+          }
+  
+          setTypingText(fullResponse.substring(0, nextIndex));
+          return nextIndex;
+        });
       }, 1000 / typingSpeed);
-
+  
       return () => clearInterval(intervalId);
     }
-  }, [fullResponse, currentMessageIndex, isTypingComplete]);
+  }, [fullResponse, isTypingComplete, typingSpeed]);
+  
 
 
 

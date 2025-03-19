@@ -11,6 +11,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import Modal from "@/components/Modal";
 
 
+
 // Dynamically import Editor and Preview with explicit typing
 const Editor = dynamic(() => import("./_components/Editor"), { ssr: false });
 const Preview = dynamic(() => import("./_components/preview"), { ssr: false });
@@ -301,7 +302,10 @@ EXPLANATIONs`;
         </Modal>
       )}
 
+      
+
     </div>
+    
   );
 }
 
