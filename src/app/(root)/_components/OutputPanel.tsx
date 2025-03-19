@@ -50,7 +50,7 @@ function OutputPanel() {
     opacity-0 group-hover:opacity-100 group-hover:translate-x-2 scale-90 group-hover:scale-100 transition-all duration-500 z-50">
 
             
-            <p className="text-green-300">// AI Mentor is guiding you</p>
+            <p className="text-green-300"> AI Mentor is guiding you</p>
 
             
             <p>
