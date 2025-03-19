@@ -3,9 +3,9 @@ import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import { useEffect, useState } from "react";
 import { defineMonacoThemes, LANGUAGE_CONFIG } from "../_constants";
 import { Editor } from "@monaco-editor/react";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import Image from "next/image";
-import { RotateCcwIcon, ShareIcon, TypeIcon, MapIcon } from "lucide-react";
+import { RotateCcwIcon, ShareIcon, TypeIcon, MapIcon, X, Menu, Link } from "lucide-react";
 import { useClerk } from "@clerk/nextjs";
 import { EditorPanelSkeleton } from "./EditorPanelSkeleton";
 import useMounted from "@/hooks/useMounted";
@@ -40,6 +40,8 @@ function EditorPanel() {
   const [memoryMapContent, setMemoryMapContent] = useState("");
   const [editorContent, setEditorContent] = useState(""); // Track editor content
   const { language, theme, fontSize, editor, setFontSize, setEditor } = useCodeEditorStore();
+  
+  
 
   const mounted = useMounted();
 
@@ -478,6 +480,8 @@ strictly follow the above instructions.
 
 
       </div>
+
+      
 
       {/* Memory Map Modal */}
       {isMemoryMapOpen && (

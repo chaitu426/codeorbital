@@ -3,6 +3,7 @@
 import { useCodeEditorStore } from "@/store/useCodeEditorStore";
 import { AlertTriangle, CheckCircle, Clock, Copy, Terminal } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 import RunningCodeSkeleton from "./RunningCodeSkeleton";
 
 
@@ -29,7 +30,59 @@ function OutputPanel() {
             <Terminal className="w-4 h-4 text-blue-400" />
           </div>
           <span className="text-sm font-medium text-gray-300">Output</span>
+
         </div>
+
+        <Link href={`/ai-tech-index`}>
+
+        <div className="relative group inline-block z-50">
+          {/* AI Mentor Icon */}
+          <div className="flex items-center justify-center w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full shadow-2xl 
+      transition-all duration-500 hover:scale-110 hover:rotate-3 hover:shadow-blue-500/50 border-2 border-white/10 animate-pulse relative">
+            <span className="text-white text-xl">🤖</span>
+
+            {/* Floating Hologram Effect */}
+            <div className="absolute inset-0 bg-blue-400 opacity-30 blur-xl scale-125 rounded-full"></div>
+          </div>
+
+          {/* Code-Like Hover Content (Left Side) */}
+          <div className="absolute -left-64 top-1/2 -translate-y-1/2 w-64 bg-gray-900 text-green-400 text-xs font-mono p-4 rounded-lg shadow-lg border border-green-500 
+    opacity-0 group-hover:opacity-100 group-hover:translate-x-2 scale-90 group-hover:scale-100 transition-all duration-500 z-50">
+
+            {/* Code Header */}
+            <p className="text-green-300">// AI Mentor is guiding you</p>
+
+            {/* AI Code Message */}
+            <p>
+              <span className="text-blue-400">const</span> mentor = <span className="text-yellow-400">"Code AI Assistant"</span>;
+            </p>
+            <p>
+              <span className="text-blue-400">console.log</span>(<span className="text-yellow-400">"Ask me anything!"</span>);
+            </p>
+
+            {/* Typing Effect */}
+            <div className="mt-2 flex items-center space-x-1">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse delay-150"></div>
+              <div className="w-2 h-2 bg-purple-400 rounded-full animate-pulse delay-300"></div>
+            </div>
+
+            {/* Arrow (Code Bubble Tail) */}
+            <div className="absolute right-[-10px] top-1/2 -translate-y-1/2 w-3 h-3 bg-gray-900 border-r border-t border-green-500 rotate-45"></div>
+          </div>
+        </div>
+        </Link>
+
+
+
+
+
+
+
+
+
+
+
 
         {hasContent && (
           <button

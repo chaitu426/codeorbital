@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import ConvexClientProvider from "@/components/providers/ConvexClientProvider";
-import Footer from "@/components/Footer";
+
 import { Toaster } from "react-hot-toast";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next"
@@ -50,7 +50,7 @@ export default function RootLayout({
 
           
 
-          <Footer />
+          
 
           <Toaster />
           <SpeedInsights />

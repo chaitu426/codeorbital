@@ -10,6 +10,7 @@ import { motion } from "framer-motion";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import Modal from "@/components/Modal";
 
+
 // Dynamically import Editor and Preview with explicit typing
 const Editor = dynamic(() => import("./_components/Editor"), { ssr: false });
 const Preview = dynamic(() => import("./_components/preview"), { ssr: false });
@@ -148,7 +149,7 @@ EXPLANATIONs`;
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#231814] text-white flex flex-col">
       <NavigationHeader />
-      <main className="flex-1 container mx-auto p-4 grid grid-cols-2 gap-4">
+      <main className="flex-1 container mx-auto p-4 grid grid-cols-2 gap-4 ">
         <div className="flex flex-col rounded-lg overflow-hidden shadow-md bg-[#1e1e1e]">
           <div className="flex items-center justify-between bg-[#11121a] border-b border-[#3c3c3c] p-2">
             <div className="flex">

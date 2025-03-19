@@ -15,7 +15,6 @@ import Comments from "./_components/Comments";
 import { useState, useEffect } from "react";
 import Modal from "@/components/Modal";
 import { useMutation } from "convex/react";
-import toast from "react-hot-toast";
 
 
 function SnippetDetailPage() {
@@ -25,7 +24,7 @@ function SnippetDetailPage() {
 
   const snippet = useQuery(api.snippets.getSnippetById, { snippetId: snippetId as Id<"snippets"> });
   const comments = useQuery(api.snippets.getComments, { snippetId: snippetId as Id<"snippets"> });
-  const hostedUrlfromdb = useQuery(api.snippets.getPreview, { snippetId: snippetId as Id<"snippets"> });
+  const hostedUrlfromdb = snippetId ? useQuery(api.snippets.getPreview, { snippetId: snippetId as Id<"snippets"> }) : undefined;
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [isHosting, setIsHosting] = useState(false);
   //const [isHosted, setIsHosted] = useState(false); // Track if hosted
@@ -92,7 +91,7 @@ function SnippetDetailPage() {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(hostedUrl);
-    toast.success("URL copied successfully"); // You can replace this with a toast notification
+    alert("URL copied to clipboard!"); // You can replace this with a toast notification
   };
 
 
